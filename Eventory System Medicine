@@ -1,0 +1,202 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        const int SIZE = 20;
+
+        string[] medicine = new string[SIZE];
+        int[] stock = new int[SIZE];
+        double[] price = new double[SIZE];
+
+        int count = 5;
+
+        medicine[0] = "Paracetamol";
+        medicine[1] = "Amoxicillin";
+        medicine[2] = "Vitamin C";
+        medicine[3] = "Cetirizine";
+        medicine[4] = "Ibuprofen";
+
+        stock[0] = 100;
+        stock[1] = 50;
+        stock[2] = 80;
+        stock[3] = 60;
+        stock[4] = 40;
+
+        price[0] = 5.00;
+        price[1] = 12.50;
+        price[2] = 8.00;
+        price[3] = 10.00;
+        price[4] = 15.00;
+
+        int choice, qty;
+
+        do
+        {
+            Console.WriteLine("\n===== PHARMACY INVENTORY SYSTEM =====");
+            Console.WriteLine("1. View Medicines");
+            Console.WriteLine("2. Add Medicine");
+            Console.WriteLine("3. Restock Medicine");
+            Console.WriteLine("4. Remove Stock");
+            Console.WriteLine("5. Search Medicine");
+            Console.WriteLine("6. Sort Medicines (A-Z)");
+            Console.WriteLine("7. Exit");
+            Console.Write("Enter your choice: ");
+
+            choice = Convert.ToInt32(Console.ReadLine());
+
+            switch (choice)
+            {
+                case 1:
+                    Console.WriteLine("\nAvailable Medicines");
+                    Console.WriteLine("-----------------------------------------");
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        Console.WriteLine((i + 1) + ". " +
+                                          medicine[i] +
+                                          " | Stock: " + stock[i] +
+                                          " | Price: PHP " + price[i]);
+                    }
+                    break;
+
+                case 2:
+                    if (count < SIZE)
+                    {
+                        Console.Write("\nEnter medicine name: ");
+                        medicine[count] = Console.ReadLine();
+
+                        Console.Write("Enter starting stock: ");
+                        stock[count] = Convert.ToInt32(Console.ReadLine());
+
+                        Console.Write("Enter price: PHP ");
+                        price[count] = Convert.ToDouble(Console.ReadLine());
+
+                        count++;
+
+                        Console.WriteLine("\nMedicine added successfully!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Inventory is full!");
+                    }
+                    break;
+
+                case 3:
+                    Console.Write("\nEnter medicine number: ");
+                    int item = Convert.ToInt32(Console.ReadLine());
+
+                    if (item >= 1 && item <= count)
+                    {
+                        Console.Write("Enter quantity to add: ");
+                        qty = Convert.ToInt32(Console.ReadLine());
+
+                        if (qty > 0)
+                        {
+                            stock[item - 1] = stock[item - 1] + qty;
+
+                            Console.WriteLine("Stock updated successfully!");
+                            Console.WriteLine("New Stock: " + stock[item - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Quantity must be greater than 0!");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid medicine number!");
+                    }
+                    break;
+
+                case 4:
+                    Console.Write("\nEnter medicine number: ");
+                    item = Convert.ToInt32(Console.ReadLine());
+
+                    if (item >= 1 && item <= count)
+                    {
+                        Console.Write("Enter quantity to remove: ");
+                        qty = Convert.ToInt32(Console.ReadLine());
+
+                        if (qty > 0 && qty <= stock[item - 1])
+                        {
+                            stock[item - 1] = stock[item - 1] - qty;
+
+                            Console.WriteLine("Stock removed successfully!");
+                            Console.WriteLine("Remaining Stock: " + stock[item - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid quantity or not enough stock!");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid medicine number!");
+                    }
+                    break;
+
+                case 5:
+                    Console.Write("\nEnter medicine name to search: ");
+                    string searchName = Console.ReadLine();
+
+                    bool found = false;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (medicine[i].ToLower() == searchName.ToLower())
+                        {
+                            Console.WriteLine("\nMedicine Found!");
+                            Console.WriteLine("Name: " + medicine[i]);
+                            Console.WriteLine("Stock: " + stock[i]);
+                            Console.WriteLine("Price: PHP " + price[i]);
+
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        Console.WriteLine("Medicine not found!");
+                    }
+                    break;
+
+                case 6:
+                    for (int i = 0; i < count - 1; i++)
+                    {
+                        for (int j = i + 1; j < count; j++)
+                        {
+                            if (string.Compare(medicine[i], medicine[j]) > 0)
+                            {
+                                string tempMedicine = medicine[i];
+                                medicine[i] = medicine[j];
+                                medicine[j] = tempMedicine;
+
+                                int tempStock = stock[i];
+                                stock[i] = stock[j];
+                                stock[j] = tempStock;
+
+                                double tempPrice = price[i];
+                                price[i] = price[j];
+                                price[j] = tempPrice;
+                            }
+                        }
+                    }
+
+                    Console.WriteLine("\nMedicines sorted successfully!");
+                    break;
+
+                case 7:
+                    Console.WriteLine("\nThank you for using the Pharmacy Inventory System!");
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid choice!");
+                    break;
+            }
+
+        } while (choice != 7);
+    }
+}
