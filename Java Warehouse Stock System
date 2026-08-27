@@ -1,0 +1,220 @@
+
+package Project;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Scanner;
+
+
+public class Rodriguez {
+     public static void main(String[] args) {
+       System.out.println("\n Warehouse Stock System");
+        Scanner sc = new Scanner(System.in); 
+
+        
+        String[][] stocks = new String[5][2];
+
+        File f = new File("stock.txt");
+
+        
+        try {
+            // save last save stocks
+            if (f.exists()) {
+
+                sc = new Scanner(f);
+
+                int x = 0;
+
+                while (sc.hasNextLine() && x < 5) {
+
+                    String line = sc.nextLine();
+
+                    String[] parts = line.split(",");
+
+                    stocks[x][0] = parts[0];
+                    stocks[x][1] = parts[1];
+
+                    x++;
+                }
+
+                sc.close();
+            }
+
+        } catch (Exception e) {
+
+            System.out.println("Error loading file.");
+
+        }
+
+        sc = new Scanner(System.in);
+
+        int choose = 0;
+
+        do {
+
+            System.out.println("\n========= MENU =========");
+            System.out.println("1 - Add Item");
+            System.out.println("2 - Stock IN");
+            System.out.println("3 - Stock OUT");
+            System.out.println("4 - Show Items");
+            System.out.println("5 - Exit");
+
+            System.out.print("Choice: ");
+
+            try {
+
+                choose = sc.nextInt();
+                sc.nextLine();
+
+            } catch (Exception e) {
+
+                System.out.println("Numbers only.");
+                sc.nextLine();
+            }
+
+            switch (choose) {
+
+                case 1 -> {
+
+                    boolean ok = false;
+                    for (int i = 0; i < stocks.length; i++) {
+
+                        if (stocks[i][0] == null) {
+                            System.out.print("Item name: ");
+                            stocks[i][0] = sc.nextLine();
+                            System.out.print("Starting stock: ");
+                            stocks[i][1] = sc.nextLine();
+                            ok = true;
+
+                            break;
+                        }
+                    }
+
+                    if (!ok) {
+
+                        System.out.println("No more space.");
+
+                    }
+
+                    try {
+
+                        FileWriter save = new FileWriter("stock.txt");
+
+                        for (int i = 0; i < stocks.length; i++) {
+                            if (stocks[i][0] != null) {
+                                save.write(stocks[i][0] + ","
+                                        + stocks[i][1] + "\n");
+                            }
+                        }
+
+                        save.close();
+
+                    } catch (Exception e) {
+                        
+                        System.out.println("Error saving file.");
+
+                    }
+                }
+
+                case 2 -> {
+
+                    try {
+                        System.out.print("Item number: ");
+                        int in = sc.nextInt() - 1;
+                        sc.nextLine();
+                        if (in < 0 || in >= stocks.length || stocks[in][0] == null) {
+                            System.out.println("Wrong item.");
+                        } else {
+                            System.out.print("Add quantity: ");
+                            int plus = sc.nextInt();
+                            sc.nextLine();
+                            int current = Integer.parseInt(stocks[in][1]);
+                            current = current + plus;
+                            stocks[in][1] = String.valueOf(current);
+                            FileWriter save = new FileWriter("stock.txt");
+                            for (int i = 0; i < stocks.length; i++) {
+
+                                if (stocks[i][0] != null) {
+
+                                    save.write(stocks[i][0] + ","
+                                            + stocks[i][1] + "\n");
+                                }
+                            }
+
+                            save.close();
+                        }
+
+                    } catch (Exception e) {
+
+                        System.out.println("Invalid input.");
+
+                    }
+                }
+
+                case 3 -> {
+
+                    try {
+                        System.out.print("Item number: ");
+                        int out = sc.nextInt() - 1;
+                        sc.nextLine();
+                        if (out < 0 || out >= stocks.length || stocks[out][0] == null) {
+
+                            System.out.println("Invalid item.");
+
+                        } else {
+                            System.out.print("Take quantity: ");
+                            int less = sc.nextInt();
+                            sc.nextLine();
+                            int have = Integer.parseInt(stocks[out][1]);
+
+                            if (less > have) {
+
+                                System.out.println("Not enough stock.");
+
+                            } else {
+                                have = have - less;
+                                stocks[out][1] = String.valueOf(have);
+                                FileWriter save = new FileWriter("stock.txt");
+                                for (int i = 0; i < stocks.length; i++) {
+
+                                    if (stocks[i][0] != null) {
+
+                                        save.write(stocks[i][0] + ","
+                                                + stocks[i][1] + "\n");
+                                    }
+                                }
+                                save.close();
+                            }
+                        }
+                    } catch (Exception e) {
+
+                        System.out.println("Invalid input.");
+
+                    }
+                }
+                case 4 -> {
+
+                    System.out.println("\nItems List:");
+
+                    for (int i = 0; i < stocks.length; i++) {
+
+                        if (stocks[i][0] != null) {
+                            System.out.println((i + 1)
+                                    + " | "
+                                    + stocks[i][0]
+                                    + " | Stock: "
+                                    + stocks[i][1]);
+                        }
+                    }
+                }
+                case 5 -> {                  
+                    System.out.println("Goodbye.");
+                }
+                default -> {
+                    System.out.println("Option does not exist, please try again.");
+                }
+            }
+        } while (choose != 5);
+
+    }
+}
